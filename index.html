@@ -20,6 +20,26 @@
   const SUPABASE_URL = 'https://kterlzsadljdezjqfita.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_gQ_FHrGZpmwgytT06GMH3A_tY8uVRsH';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+async function trackJeroVisitor(){
+  try{
+    let sid=localStorage.getItem('jeroVisitorId');
+    if(!sid){
+      sid=(crypto.randomUUID?crypto.randomUUID():'jero-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+      localStorage.setItem('jeroVisitorId',sid);
+    }
+    await supabaseClient.from('jero_visitors').upsert({
+      visitor_id:sid,
+      first_seen_at:new Date().toISOString(),
+      last_seen_at:new Date().toISOString(),
+      page_path:location.pathname,
+      user_agent:navigator.userAgent
+    },{onConflict:'visitor_id'});
+  }catch(e){
+    console.warn('Visitor tracking failed:',e);
+  }
+}
+trackJeroVisitor();
 </script>
 <style>
 :root{--bg:#f4f7fb;--surface:#fff;--surface2:#f8fafc;--text:#142033;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--primary2:#7c3aed;--success:#16a34a;--warning:#f59e0b;--danger:#dc2626;--shadow:0 12px 35px rgba(15,23,42,.08);--radius:20px}
