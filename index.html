@@ -4,13 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<title>JERO Pro — Smart Call Center</title>
+<title>JERO — إدارة العملاء ومركز المعرفة</title>
+<meta name="description" content="JERO مركز معرفة عربي يقدم أدلة عملية لإدارة العملاء ومراكز الاتصال والتقارير والمتابعة، مع منطقة عمل منفصلة للموظفين.">
+<meta name="robots" content="index,follow">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3721218688096831"
          crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Supabase frontend configuration.
+  // Publishable keys are intended for browser apps; database security must be enforced with RLS.
+  const SUPABASE_URL = 'https://kterlzsadljdezjqfita.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_gQ_FHrGZpmwgytT06GMH3A_tY8uVRsH';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+</script>
 <style>
 :root{--bg:#f4f7fb;--surface:#fff;--surface2:#f8fafc;--text:#142033;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--primary2:#7c3aed;--success:#16a34a;--warning:#f59e0b;--danger:#dc2626;--shadow:0 12px 35px rgba(15,23,42,.08);--radius:20px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);transition:.25s}body.dark{--bg:#080f1d;--surface:#111c2e;--surface2:#0d1728;--text:#f8fafc;--muted:#a8b4c7;--line:#29384d;--shadow:0 12px 35px rgba(0,0,0,.25)}
@@ -26,6 +36,12 @@ input,textarea,select{width:100%;border:1px solid var(--line);background:var(--s
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-box{height:310px;position:relative}.chart-box canvas{max-height:300px}.reminder-list{display:grid;gap:8px}.reminder{border:1px solid var(--line);border-right:5px solid var(--warning);padding:12px;border-radius:14px;background:var(--surface2)}.reminder.overdue{border-right-color:var(--danger)}.reminder.done{border-right-color:var(--success)}
 .settings{display:none}.setting-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0;gap:10px}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;z-index:5000;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #welcomeScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1d4ed8,#6d28d9);display:flex;align-items:center;justify-content:center;z-index:9000;padding:20px}.welcomeBox{width:min(430px,100%);background:#fff;padding:30px 22px;border-radius:26px;text-align:center;box-shadow:0 20px 70px #0005}.welcomeLogo{font-size:38px;font-weight:900;color:#172033}.welcomeBox p{color:#64748b}.welcomeBox button{width:100%;background:#2563eb;color:#fff;margin-top:8px}.welcomeBox input{background:#fff;color:#111}
+
+/* Public Knowledge Center */
+.public-portal{display:block;background:var(--bg);min-height:100vh}.public-nav{position:sticky;top:0;z-index:60;background:rgba(15,23,42,.96);color:#fff;box-shadow:0 4px 18px #0002}.public-nav-inner{max-width:1180px;margin:auto;padding:12px 14px;display:flex;align-items:center;gap:10px;overflow:auto}.public-brand{font-weight:900;font-size:20px;margin-left:auto;white-space:nowrap}.public-nav a{color:#fff;text-decoration:none;padding:9px 11px;border-radius:10px;white-space:nowrap;font-size:13px}.public-nav a:hover{background:#23324a}.public-hero{background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.2),transparent 28%),linear-gradient(135deg,#0f766e,#2563eb 55%,#6d28d9);color:#fff;padding:58px 14px 70px}.public-hero-inner{max-width:1180px;margin:auto;display:grid;grid-template-columns:1.35fr .65fr;gap:24px;align-items:center}.public-hero h1{font-size:clamp(32px,5vw,56px);margin:0 0 12px;line-height:1.15}.public-hero p{font-size:18px;line-height:1.9;max-width:760px;margin:0 0 18px;opacity:.94}.public-hero-card{background:#ffffff18;border:1px solid #ffffff35;border-radius:22px;padding:22px;backdrop-filter:blur(8px)}.public-hero-card strong{font-size:30px;display:block;margin-bottom:6px}.public-container{max-width:1180px;margin:-28px auto 0;padding:0 14px 50px;position:relative}.public-section{margin-bottom:24px}.public-section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}.public-section-title h2{margin:0;font-size:25px}.public-section-title p{margin:0;color:var(--muted);font-size:13px}.article-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.article-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column}.article-card .tag{display:inline-flex;align-self:flex-start;background:#2563eb14;color:var(--primary);padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;margin-bottom:10px}.article-card h3{margin:0 0 8px;font-size:18px;line-height:1.45}.article-card p{color:var(--muted);line-height:1.85;margin:0 0 12px}.article-card .read{margin-top:auto;color:var(--primary);font-weight:800;text-decoration:none}.article-full{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-top:12px}.article-full h3{margin:0 0 8px;font-size:21px}.article-full h4{margin:16px 0 6px}.article-full p,.article-full li{line-height:1.95;color:var(--text)}.article-full ul{padding-right:20px}.public-ad{background:var(--surface);border:1px dashed var(--line);border-radius:18px;padding:12px;margin:18px 0;text-align:center;min-height:110px}.public-ad small{display:block;color:var(--muted);font-size:11px;margin-bottom:8px}.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.faq{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:15px}.faq h3{font-size:16px;margin:0 0 7px}.faq p{margin:0;color:var(--muted);line-height:1.8}.public-footer{background:#0f172a;color:#cbd5e1;padding:28px 14px}.public-footer-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.public-footer a{color:#fff}#employeeZone{display:none}
+@media(max-width:900px){.public-hero-inner{grid-template-columns:1fr}.article-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.article-grid,.faq-grid{grid-template-columns:1fr}.public-hero{padding:40px 12px 58px}.public-container{padding-left:10px;padding-right:10px}.public-nav-inner{padding:9px 10px}.public-brand{font-size:17px}}
+
 @media(max-width:900px){.hero-grid,.current,.import-grid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.search-grid{grid-template-columns:1fr 1fr}.report-tools{grid-template-columns:1fr 1fr}.charts{grid-template-columns:1fr}.status-grid{grid-template-columns:repeat(2,1fr)}.field-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.container{padding-left:10px;padding-right:10px}.card{padding:15px;border-radius:17px}.topbar-inner{padding:8px 10px}.logo{font-size:17px}.hero{padding:28px 12px 38px}.grid{grid-template-columns:1fr 1fr;gap:8px}.stat{min-height:78px;padding:12px}.stat b{font-size:24px}.search-grid,.report-tools,.field-grid{grid-template-columns:1fr}.action-grid{grid-template-columns:1fr}.status-grid{grid-template-columns:1fr 1fr}.chart-box{height:260px}.button-row .btn{flex:1;min-width:120px}}
 
@@ -82,9 +98,33 @@ textarea{min-height:74px}.action-grid{gap:8px}.button-row{gap:7px;margin-top:8px
 </style>
 </head>
 <body>
-<nav class="topbar"><div class="topbar-inner"><div class="logo">📞 JERO</div><button class="top-btn" onclick="scrollToId('dashboard')">الرئيسية</button><button class="top-btn" onclick="focusSearch()">🔎 بحث</button><button class="top-btn" onclick="scrollToId('report')">📊 التقرير</button><button class="top-btn" onclick="scrollToId('reminders')">🔔 المتابعة</button><button class="top-btn" onclick="toggleDark()">🌙</button><button class="top-btn" onclick="toggleSettings()">⚙️</button><div class="clock" id="clock">00:00:00</div></div></nav>
+<div id="publicPortal" class="public-portal">
+<nav class="public-nav"><div class="public-nav-inner"><div class="public-brand">JERO Knowledge Center</div><a href="#knowledge">المعرفة</a><a href="#guides">أدلة العمل</a><a href="#faq">الأسئلة الشائعة</a><button class="top-btn" onclick="openEmployeeApp()">🔐 دخول الموظفين</button></div></nav>
+<header class="public-hero"><div class="public-hero-inner"><div><div style="font-size:13px;font-weight:800;opacity:.9;margin-bottom:8px">مركز المعرفة المفتوح من JERO</div><h1>أفكار وأدلة عملية لإدارة العملاء ومراكز الاتصال</h1><p>محتوى عربي مبسّط يساعد أصحاب الأعمال وفرق خدمة العملاء على تنظيم المتابعة، تحسين جودة المكالمات، بناء التقارير، وتقليل الأخطاء اليومية — بشكل عملي وقابل للتطبيق.</p><div class="button-row"><a class="btn btn-light" href="#knowledge" style="text-decoration:none">📚 استكشف المقالات</a><button class="btn" style="background:#fff;color:#172033" onclick="openEmployeeApp()">🔐 منطقة الموظفين</button></div></div><div class="public-hero-card"><strong>JERO</strong><div>مركز معرفة مستقل عن أدوات العمل الداخلية.</div><hr style="border:0;border-top:1px solid #ffffff35;margin:15px 0"><div style="line-height:1.9;font-size:13px">المقالات هنا متاحة للجمهور، بينما بيانات العملاء وتقارير الموظفين تبقى داخل منطقة العمل.</div></div></div></header>
+<main class="public-container">
+<section id="knowledge" class="public-section"><div class="public-section-title"><div><h2>📚 مركز المعرفة</h2><p>مقالات أصلية مكتوبة لتقديم فائدة حقيقية للزائر.</p></div></div><div class="article-grid">
+<article class="article-card"><span class="tag">إدارة العملاء</span><h3>كيف تبني نظام متابعة عملاء منظم؟</h3><p>النجاح في المتابعة لا يعتمد على كثرة المكالمات فقط، بل على معرفة من تم التواصل معه، وما الخطوة التالية، ومتى يجب الرجوع إليه.</p><a class="read" href="#article-followup">اقرأ الدليل ←</a></article>
+<article class="article-card"><span class="tag">مراكز الاتصال</span><h3>أهم مؤشرات أداء فريق خدمة العملاء</h3><p>تعرف على مجموعة مؤشرات تساعدك على فهم حجم العمل وجودة المتابعة دون تحويل التقرير إلى أرقام معقدة يصعب استخدامها.</p><a class="read" href="#article-kpi">اقرأ الدليل ←</a></article>
+<article class="article-card"><span class="tag">المكالمات</span><h3>كيف تجعل مكالمة العميل أكثر فاعلية؟</h3><p>من التحضير قبل الاتصال إلى تسجيل نتيجة المكالمة، خطوات بسيطة تجعل الفريق أكثر اتساقاً وتقلل ضياع المعلومات.</p><a class="read" href="#article-calls">اقرأ الدليل ←</a></article>
+<article class="article-card"><span class="tag">التقارير</span><h3>دليل مبسط لبناء تقرير مبيعات أو اتصالات</h3><p>التقرير الجيد يجيب بسرعة عن: ماذا حدث؟ متى؟ مع من؟ وما الذي يحتاج إلى متابعة؟</p><a class="read" href="#article-reports">اقرأ الدليل ←</a></article>
+<article class="article-card"><span class="tag">إدارة الفريق</span><h3>تنظيم مهام الموظفين بدون فوضى</h3><p>استخدام حالات واضحة وأولويات ومواعيد متابعة يجعل توزيع العمل ومراجعة الأداء أسهل بكثير.</p><a class="read" href="#article-team">اقرأ الدليل ←</a></article>
+<article class="article-card"><span class="tag">جودة الخدمة</span><h3>أخطاء شائعة تضعف تجربة العميل</h3><p>أحياناً المشكلة ليست في عدد الاتصالات، بل في عدم وضوح الخطوة التالية أو تكرار الأسئلة أو فقدان سجل التواصل.</p><a class="read" href="#article-quality">اقرأ الدليل ←</a></article>
+</div></section>
+<div class="public-ad"><small>مساحة إعلانية — ستظهر الإعلانات بعد قبول الموقع في AdSense وتفعيل الوحدة.</small><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3721218688096831" data-ad-slot="YOUR_AD_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>
+<section id="guides" class="public-section"><div class="public-section-title"><div><h2>🧭 الأدلة العملية</h2><p>محتوى طويل ومفيد يمكن الرجوع إليه في أي وقت.</p></div></div>
+<article id="article-followup" class="article-full"><h3>كيف تبني نظام متابعة عملاء منظم؟</h3><p>أي فريق يتعامل مع عدد كبير من العملاء يحتاج إلى طريقة ثابتة لتسجيل ما حدث وما يجب أن يحدث بعد ذلك. البداية الصحيحة هي تعريف مجموعة صغيرة من الحالات الواضحة مثل: جديد، تم التواصل، لم يرد، متابعة، غير مهتم، أو مكتمل.</p><h4>1) سجل نتيجة كل تواصل</h4><p>بعد كل مكالمة، يجب أن تكون النتيجة قابلة للفهم في ثوانٍ. تجنب الملاحظات الغامضة، واكتب المعلومة التي يحتاجها أي موظف آخر لفهم الخطوة التالية.</p><h4>2) اربط كل عميل بخطوة قادمة</h4><p>إذا كان العميل يحتاج إلى متابعة، حدد موعداً أو إجراءً واضحاً. وجود قائمة عملاء كبيرة بدون مواعيد متابعة يجعل الفريق يعمل بطريقة رد فعل بدلاً من خطة.</p><h4>3) راجع القائمة دورياً</h4><p>المراجعة اليومية أو الأسبوعية تكشف العملاء الذين تم نسيانهم، وتوضح أين يتجمع ضغط العمل. الهدف ليس زيادة عدد الاتصالات عشوائياً، بل تحسين جودة المتابعة.</p></article>
+<article id="article-kpi" class="article-full"><h3>أهم مؤشرات أداء فريق خدمة العملاء</h3><p>المؤشرات المفيدة هي التي تساعد الإدارة على اتخاذ قرار. من أمثلتها عدد العملاء الذين تم التواصل معهم، نسبة من لم يردوا، عدد حالات المتابعة، ومتوسط مدة المكالمة عندما تكون المدة ذات معنى للعمل.</p><h4>لماذا لا يكفي رقم واحد؟</h4><p>ارتفاع عدد المكالمات لا يعني بالضرورة أداءً أفضل. يجب قراءة الرقم مع النتيجة والجودة. قد ينفذ موظف عدداً كبيراً من الاتصالات، بينما يحتاج فريق آخر إلى وقت أطول لأن طبيعة العملاء مختلفة.</p><h4>اجعل التقرير قابلاً للتنفيذ</h4><p>في نهاية التقرير يجب أن يظهر ما يحتاج إلى قرار: هل هناك عملاء متأخرون؟ هل توجد حالات كثيرة بلا نتيجة؟ هل توجد مشكلة في توزيع القوائم؟ التقرير الجيد يحول البيانات إلى خطوات.</p></article>
+<article id="article-calls" class="article-full"><h3>كيف تجعل مكالمة العميل أكثر فاعلية؟</h3><p>التحضير قبل المكالمة يوفر وقتاً كبيراً. راجع اسم العميل، آخر تواصل، الملاحظات السابقة، والهدف من الاتصال. ثم ابدأ بوضوح وامنح العميل فرصة لشرح احتياجه قبل الانتقال إلى التفاصيل.</p><h4>بعد المكالمة</h4><p>أهم خطوة هي تسجيل النتيجة مباشرة. إذا تأجل التسجيل، تزيد احتمالية نسيان التفاصيل. استخدم ملاحظات قصيرة ومنظمة، وحدد ما إذا كانت هناك متابعة أو إجراء آخر.</p></article>
+<article id="article-reports" class="article-full"><h3>دليل مبسط لبناء تقرير مبيعات أو اتصالات</h3><p>ابدأ بالتاريخ ثم الحالة والتصنيف والأولوية. أضف الاسم أو المعرّف الذي يسمح بالرجوع إلى العميل، ثم أضف الملاحظات المهمة. بهذه الطريقة يصبح التقرير مفيداً للإدارة وللموظف الذي سيكمل العمل.</p><h4>تجنب ازدحام التقرير</h4><p>ليس كل رقم يستحق أن يظهر في الصفحة الأولى. ضع الملخص في البداية، ثم التفاصيل في جدول منفصل. استخدم فلاتر زمنية وحالات واضحة حتى يمكن الوصول إلى المعلومة بسرعة.</p></article>
+<article id="article-team" class="article-full"><h3>تنظيم مهام الموظفين بدون فوضى</h3><p>ابدأ بتوحيد أسماء الحالات والأولويات حتى يفهم جميع أعضاء الفريق نفس الكلمات بنفس المعنى. بعد ذلك وزّع القوائم بطريقة يمكن قياسها، وراجع النتائج بدلاً من متابعة النشاط فقط.</p><h4>قاعدة بسيطة</h4><p>كل مهمة يجب أن يكون لها مسؤول ونتيجة متوقعة وموعد مراجعة عندما تكون المتابعة مطلوبة. هذه القاعدة تقلل المهام المعلقة وتساعد المدير على معرفة ما يحتاج إلى تدخل.</p></article>
+<article id="article-quality" class="article-full"><h3>أخطاء شائعة تضعف تجربة العميل</h3><p>من أكثر الأخطاء شيوعاً تكرار نفس الأسئلة لأن سجل التواصل غير واضح، وعدم معرفة الخطوة التالية، وتأخير تسجيل نتيجة المكالمة، واستخدام حالات كثيرة جداً يصعب على الفريق فهمها.</p><h4>الحل</h4><p>صمّم عملية بسيطة، واجعل البيانات التي يحتاجها الموظف ظاهرة في مكان واحد، وراجع الحالات بشكل دوري. كلما كانت العملية أوضح، قل الوقت الذي يضيع في البحث عن المعلومات.</p></article></section>
+<section id="faq" class="public-section"><div class="public-section-title"><div><h2>❓ أسئلة شائعة</h2><p>إجابات مختصرة عن فكرة المنصة ومركز المعرفة.</p></div></div><div class="faq-grid"><div class="faq"><h3>ما هو JERO؟</h3><p>منصة تجمع بين أدوات داخلية لإدارة العملاء والمكالمات وبين مركز معرفة عام يقدم محتوى تعليمي عن تنظيم العمل وخدمة العملاء.</p></div><div class="faq"><h3>هل بيانات الموظفين والعملاء عامة؟</h3><p>لا. مركز المعرفة منفصل عن منطقة العمل، ولا يُنشر فيه سجل العملاء أو التقارير الداخلية.</p></div><div class="faq"><h3>هل المقالات منسوخة من مواقع أخرى؟</h3><p>المحتوى المنشور في هذا المركز مكتوب بصياغة أصلية ومخصص لموضوعات إدارة العملاء وخدمة الاتصال.</p></div><div class="faq"><h3>كيف أدخل إلى منطقة الموظفين؟</h3><p>استخدم زر «دخول الموظفين» في أعلى الصفحة. سيظهر نظام العمل الداخلي بشكل منفصل عن مركز المعرفة العام.</p></div></div></section>
+<section class="card" id="about-public"><h2>ℹ️ عن مركز المعرفة</h2><p style="line-height:1.95;color:var(--muted);margin:0">تم إنشاء هذا القسم ليكون مساحة عامة مستقلة عن أدوات التشغيل الداخلية. هدفه تقديم مقالات وأدلة عملية قابلة للقراءة والمشاركة، مع الحفاظ على فصل بيانات العمل الداخلية عن المحتوى العام.</p></section>
+</main><footer class="public-footer"><div class="public-footer-inner"><div>© JERO Knowledge Center</div><div><a href="#knowledge">المعرفة</a> · <a href="#guides">الأدلة</a> · <a href="#faq">الأسئلة الشائعة</a></div></div></footer></div>
+<div id="employeeZone">
+<nav class="topbar"><div class="topbar-inner"><div class="logo">📞 JERO</div><button class="top-btn" onclick="returnToPublic()">🌐 المركز العام</button><button class="top-btn" onclick="scrollToId('dashboard')">الرئيسية</button><button class="top-btn" onclick="focusSearch()">🔎 بحث</button><button class="top-btn" onclick="scrollToId('report')">📊 التقرير</button><button class="top-btn" onclick="scrollToId('reminders')">🔔 المتابعة</button><button class="top-btn" onclick="toggleDark()">🌙</button><button class="top-btn" onclick="toggleSettings()">⚙️</button><div class="clock" id="clock">00:00:00</div></div></nav>
 <div id="welcomeScreen"><div class="welcomeBox"><div class="welcomeLogo">JERO 📞</div><h2>Smart Call Center Pro</h2><p>نسخة مطورة لإدارة العملاء والمكالمات والتقارير والمتابعات.</p><input id="userName" placeholder="اكتب اسمك" autocomplete="off"><button class="btn" onclick="enterSite()">دخول 🚀</button></div></div>
-<header class="hero"><div class="hero-inner"><div class="hero-grid"><div><h1 id="helloTitle">Hello Jero! 👋</h1><p>لوحة تحكم احترافية لمركز الاتصال — أسرع، أوضح، ومناسبة للموبايل.</p></div><div class="hero-panel"><div>آخر حفظ</div><strong id="lastSaved">لم يتم الحفظ بعد</strong><div class="muted" style="color:#fff9;margin-top:5px">الحفظ التلقائي يعمل على هذا الجهاز.</div></div></div></div></header>
+<header class="hero"><div class="hero-inner"><div class="hero-grid"><div><h1 id="helloTitle">Hello Jero! 👋</h1><p>لوحة تحكم احترافية لمركز الاتصال — أسرع، أوضح، ومناسبة للموبايل.</p></div><div class="hero-panel"><div>آخر حفظ</div><strong id="lastSaved">لم يتم الحفظ بعد</strong><div class="muted" style="color:#fff9;margin-top:5px">الحفظ التلقائي يعمل على هذا الجهاز.</div><div id="cloudStatus" class="muted" style="color:#fff9;margin-top:5px">☁️ جاري تجهيز المزامنة السحابية...</div></div></div></div></header>
 <div class="container">
 <section id="dashboard" class="card"><div class="section-head"><div><h2>📊 لوحة المتابعة</h2><div class="muted">الإحصائيات تتحدث لحظياً حسب بياناتك وفلاترك.</div></div><div class="button-row"><button class="btn btn-light btn-sm" onclick="exportJSON()">📦 نسخة احتياطية</button><button class="btn btn-primary btn-sm" onclick="renderAll()">🔄 تحديث</button></div></div><div class="grid"><div class="stat blue"><span>إجمالي العملاء</span><b id="qTotal">0</b></div><div class="stat green"><span>تم التواصل</span><b id="qDone">0</b></div><div class="stat orange"><span>لم يرد</span><b id="qNo">0</b></div><div class="stat purple"><span>متابعة</span><b id="qFollow">0</b></div><div class="stat slate"><span>مقفول</span><b id="qLocked">0</b></div><div class="stat red"><span>غير موجود</span><b id="qNotFound">0</b></div><div class="stat teal"><span>مشغول</span><b id="qBusy">0</b></div><div class="stat slate"><span>متبقي / جديد</span><b id="qNew">0</b></div></div></section>
 <section class="card" style="text-align:center">
@@ -98,7 +138,7 @@ textarea{min-height:74px}.action-grid{gap:8px}.button-row{gap:7px;margin-top:8px
 <section id="report" class="card"><div class="section-head"><div><h2>📊 التقرير الاحترافي</h2><div class="muted" id="reportDate">-</div></div><div class="button-row"><button class="btn btn-success btn-sm" onclick="exportCSV()">📥 CSV</button><button class="btn btn-purple btn-sm" onclick="saveReport()">💾 HTML</button><button class="btn btn-primary btn-sm" onclick="exportJSON()">📦 JSON</button></div></div><div class="report-tools"><input id="dateFrom" type="date" onchange="renderReport()"><input id="dateTo" type="date" onchange="renderReport()"><select id="reportStatus" onchange="renderReport()"><option value="all">كل الحالات</option><option>جديد</option><option>تم التواصل</option><option>لم يرد</option><option>متابعة</option><option>مقفول</option><option>غير موجود</option><option>غير مهتم</option><option>مشغول</option><option>X</option></select><select id="reportCategory" onchange="renderReport()"><option value="all">كل التصنيفات</option><option>جديد</option><option>مهتم</option><option>عميل</option><option>غير مهتم</option><option>VIP</option></select></div><div class="filter-chips"><button class="chip active" onclick="setQuickDate('all',this)">الكل</button><button class="chip" onclick="setQuickDate('today',this)">اليوم</button><button class="chip" onclick="setQuickDate('7',this)">آخر 7 أيام</button><button class="chip" onclick="setQuickDate('30',this)">آخر 30 يوم</button></div><div class="grid" style="margin-bottom:14px"><div class="stat blue"><span>نتائج التقرير</span><b id="rTotal">0</b></div><div class="stat green"><span>تم التواصل</span><b id="rDone">0</b></div><div class="stat orange"><span>لم يرد</span><b id="rNo">0</b></div><div class="stat purple"><span>متابعة</span><b id="rFollow">0</b></div></div><div class="charts"><div class="card" style="margin:0"><h3>توزيع الحالات</h3><div class="chart-box"><canvas id="statusChart"></canvas></div></div><div class="card" style="margin:0"><h3>الأداء حسب التاريخ</h3><div class="chart-box"><canvas id="dateChart"></canvas></div></div></div><div class="card" style="margin:14px 0 0"><h3>تفاصيل العملاء</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم</th><th>المحافظة</th><th>الحالة</th><th>التصنيف</th><th>الأولوية</th><th>التاريخ</th><th>المدة</th><th>الملاحظات</th></tr></thead><tbody id="reportTable"></tbody></table></div></div></section>
 <section class="card"><div class="section-head"><div><h2>💾 الحفظ والاسترجاع</h2><div class="muted">البيانات محفوظة محلياً على نفس الجهاز والمتصفح.</div></div></div><div class="button-row"><button class="btn btn-primary" onclick="exportJSON()">📦 تصدير نسخة احتياطية JSON</button><button class="btn btn-light" onclick="document.getElementById('jsonFile').click()">📂 استرجاع JSON</button><input id="jsonFile" type="file" accept="application/json,.json" style="display:none" onchange="importJSON(event)"><button class="btn btn-danger" onclick="newList()">🗑️ قائمة جديدة</button></div></section>
 <section class="card settings" id="settings"><h2>⚙️ الإعدادات</h2><div class="setting-row"><span>💾 الحفظ التلقائي</span><button id="autoBtn" class="btn btn-primary btn-sm" onclick="toggleAutoSave()">مفعل</button></div><div class="setting-row"><span>🕐 إظهار الثواني في الساعة</span><button id="secondsBtn" class="btn btn-primary btn-sm" onclick="toggleSeconds()">مفعل</button></div></section>
-</div><div class="toast" id="toast"></div>
+</div></div><div class="toast" id="toast"></div>
 <script>
 let customers=[];let current=0;let timer=null;let callStarted=false;let autoSave=true;let showSeconds=true;let statusChart=null;let dateChart=null;let lastReminderAlert=0;
 const statuses=['جديد','تم التواصل','لم يرد','متابعة','مقفول','غير موجود','غير مهتم','مشغول','X'];
@@ -106,6 +146,8 @@ const priorityNames={high:'عالية',medium:'متوسطة',normal:'عادية'
 function $(id){return document.getElementById(id)}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2200)}
 function scrollToId(id){$(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+function openEmployeeApp(){$('publicPortal').style.display='none';$('employeeZone').style.display='block';window.scrollTo(0,0);if(typeof showWelcome==='function')showWelcome()}
+function returnToPublic(){$('employeeZone').style.display='none';$('publicPortal').style.display='block';window.scrollTo(0,0)}
 function enterSite(){const n=$('userName').value.trim();if(!n){alert('اكتب اسمك الأول');return}localStorage.setItem('jeroUserName',n);showWelcome()}
 function showWelcome(){const n=localStorage.getItem('jeroUserName');if(n){$('welcomeScreen').style.display='none';$('helloTitle').textContent='Hello '+n+'! 👋'}}
 showWelcome();
@@ -170,12 +212,122 @@ function importExcel(ev){
  };
  reader.readAsArrayBuffer(file);
 }
+
+let cloudSyncBusy=false;
+
+function setCloudStatus(text, ok=false){
+  const el=$('cloudStatus');
+  if(!el)return;
+  el.textContent=(ok?'☁️ ':'☁️ ')+text;
+}
+
+function customerToRow(c){
+  return {
+    number: c.number,
+    name: c.name || '',
+    governorate: c.governorate || '',
+    status: c.status || 'جديد',
+    category: c.category || 'جديد',
+    priority: c.priority || 'normal',
+    reminder: c.reminder || null,
+    last_contact: c.lastContact || null,
+    notes: c.notes || '',
+    tags: c.tags || '',
+    call_date: c.date || '',
+    start_time: c.startTime || '',
+    end_time: c.endTime || '',
+    duration: Number(c.duration)||0
+  };
+}
+
+function rowToCustomer(r){
+  return emptyCustomer(normalizeEgyptianNumber(r.number),{
+    name:r.name||'',
+    governorate:r.governorate||'',
+    status:r.status||'جديد',
+    category:r.category||'جديد',
+    priority:r.priority||'normal',
+    reminder:r.reminder||'',
+    lastContact:r.last_contact||'',
+    notes:r.notes||'',
+    tags:r.tags||'',
+    date:r.call_date||'',
+    startTime:r.start_time||'',
+    endTime:r.end_time||'',
+    duration:Number(r.duration)||0
+  });
+}
+
+async function loadCustomersFromCloud(){
+  try{
+    setCloudStatus('جاري تحميل العملاء...');
+    const {data,error}=await supabaseClient.from('jero_customers').select('*').order('created_at',{ascending:true});
+    if(error)throw error;
+    if(Array.isArray(data)){
+      customers=data.map(rowToCustomer);
+      dedupe();
+      current=Math.min(current,Math.max(0,customers.length-1));
+      try{
+        localStorage.setItem('jeroCustomers',JSON.stringify(customers));
+        localStorage.setItem('jeroCurrent',String(current));
+        localStorage.setItem('jeroSavedAt',new Date().toISOString());
+      }catch(e){}
+      if(customers.length)$('currentSection').style.display='block';
+    }
+    setCloudStatus('متصل — البيانات من Supabase',true);
+  }catch(error){
+    console.warn('Supabase load:',error);
+    setCloudStatus('غير متصل — يعمل بالحفظ المحلي');
+  }
+}
+
+async function syncCustomersToCloud(){
+  if(cloudSyncBusy || !customers.length)return;
+  cloudSyncBusy=true;
+  try{
+    setCloudStatus('جاري مزامنة البيانات...');
+    const rows=customers.map(customerToRow);
+    const {error}=await supabaseClient.from('jero_customers').upsert(rows,{onConflict:'number'});
+    if(error)throw error;
+    setCloudStatus('متصل — تمت المزامنة',true);
+  }catch(error){
+    console.warn('Supabase sync:',error);
+    setCloudStatus('تعذر المزامنة — البيانات محفوظة محلياً');
+  }finally{
+    cloudSyncBusy=false;
+  }
+}
+
 let saveTimer=null;
-function saveData(){if(!autoSave)return;try{localStorage.setItem('jeroCustomers',JSON.stringify(customers));localStorage.setItem('jeroCurrent',String(current));localStorage.setItem('jeroSavedAt',new Date().toISOString());$('lastSaved').textContent=new Date().toLocaleString('ar-EG');}catch(e){toast('تعذر الحفظ: مساحة التخزين ممتلئة')};}
+async function saveData(){
+  if(!autoSave)return;
+  const savedAt=new Date().toISOString();
+  try{
+    localStorage.setItem('jeroCustomers',JSON.stringify(customers));
+    localStorage.setItem('jeroCurrent',String(current));
+    localStorage.setItem('jeroSavedAt',savedAt);
+    $('lastSaved').textContent=new Date(savedAt).toLocaleString('ar-EG');
+  }catch(e){toast('تعذر الحفظ المحلي')}
+  await syncCustomersToCloud();
+}
 function saveDataDeferred(){if(!autoSave)return;clearTimeout(saveTimer);saveTimer=setTimeout(saveData,250);}
 function refreshLight(){renderStats();updateCurrent();}
 function refreshHeavy(){if('requestIdleCallback' in window) requestIdleCallback(()=>renderAll(),{timeout:2000}); else setTimeout(renderAll,500)}
-function loadData(){try{const raw=localStorage.getItem('jeroCustomers');if(raw){customers=JSON.parse(raw)||[];dedupe();current=Math.min(parseInt(localStorage.getItem('jeroCurrent')||'0'),Math.max(0,customers.length-1));if(customers.length)$('currentSection').style.display='block';const s=localStorage.getItem('jeroSavedAt');if(s)$('lastSaved').textContent=new Date(s).toLocaleString('ar-EG')}}catch(e){customers=[]}}
+async function loadData(){
+  try{
+    const raw=localStorage.getItem('jeroCustomers');
+    if(raw){
+      customers=JSON.parse(raw)||[];
+      dedupe();
+      current=Math.min(parseInt(localStorage.getItem('jeroCurrent')||'0'),Math.max(0,customers.length-1));
+      if(customers.length)$('currentSection').style.display='block';
+      const s=localStorage.getItem('jeroSavedAt');
+      if(s)$('lastSaved').textContent=new Date(s).toLocaleString('ar-EG');
+    }
+  }catch(e){customers=[]}
+  await loadCustomersFromCloud();
+  renderAll();
+}
 function updateCurrent(){if(!customers.length)return;current=Math.max(0,Math.min(current,customers.length-1));const c=customers[current];$('currentNumber').textContent=c.number;$('progress').textContent=`العميل ${current+1} من ${customers.length}`;$('date').textContent=c.date||'-';$('startTime').textContent=c.startTime||'-';$('endTime').textContent=c.endTime||'-';$('timer').textContent=formatDuration(c.duration);$('currentMeta').innerHTML=`${c.name?'<b>'+esc(c.name)+'</b> · ':''}${c.governorate?esc(c.governorate):'بدون محافظة'} ${c.tags?'<br>🏷️ '+esc(c.tags):''}`;const badge=$('currentBadge');badge.textContent=c.status||'جديد';badge.className='badge '+(c.priority==='high'?'priority-high':c.priority==='medium'?'priority-medium':c.priority==='low'?'priority-low':'priority-normal');$('cName').value=c.name||'';$('cGov').value=c.governorate||'';$('cCategory').value=c.category||'جديد';$('cPriority').value=c.priority||'normal';$('cReminder').value=c.reminder||'';$('cLastContact').value=c.lastContact||'';$('notes').value=c.notes||'';$('cTags').value=c.tags||'';}
 function saveCurrentCustomer(silent=false){const c=customers[current];if(!c)return;c.name=$('cName').value.trim();c.governorate=$('cGov').value.trim();c.category=$('cCategory').value;c.priority=$('cPriority').value;c.reminder=$('cReminder').value;c.lastContact=$('cLastContact').value;c.notes=$('notes').value.trim();c.tags=$('cTags').value.trim();saveDataDeferred();refreshLight();if(!silent){refreshHeavy();toast('تم حفظ بيانات العميل')}}
 ['cName','cGov','cCategory','cPriority','cReminder','cLastContact','notes','cTags'].forEach(id=>$(id).addEventListener('change',()=>saveCurrentCustomer(true)));
@@ -214,6 +366,6 @@ function downloadBlob(content,name,type){const blob=new Blob([content],{type});c
 function saveReport(){const rows=getReportRows();if(!rows.length){alert('لا يوجد تقرير لحفظه');return}const tr=rows.map((c,i)=>`<tr><td>${i+1}</td><td>${esc(c.name||'-')}</td><td dir="ltr">${esc(c.number)}</td><td>${esc(c.governorate||'-')}</td><td>${esc(c.status||'جديد')}</td><td>${esc(c.category||'جديد')}</td><td>${priorityNames[c.priority]||'عادية'}</td><td>${esc(c.date||'-')}</td><td>${formatDuration(c.duration)}</td><td>${esc(c.notes||'-')}</td></tr>`).join('');const html=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JERO Call Report</title><style>body{font-family:Tahoma,Arial;background:#f4f7fb;color:#172033;padding:24px}h1{text-align:center}.meta{text-align:center;color:#64748b;margin-bottom:20px}.box{background:#fff;padding:18px;border-radius:16px;box-shadow:0 5px 20px #0001;overflow:auto}table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:right}th{background:#eef2ff}</style></head><body><h1>📊 JERO Call Report</h1><div class="meta">${formatDate(new Date())} · عدد العملاء: ${rows.length}</div><div class="box"><table><thead><tr><th>#</th><th>الاسم</th><th>الرقم</th><th>المحافظة</th><th>الحالة</th><th>التصنيف</th><th>الأولوية</th><th>التاريخ</th><th>المدة</th><th>الملاحظات</th></tr></thead><tbody>${tr}</tbody></table></div></body></html>`;downloadBlob('\uFEFF'+html,'JERO-Call-Report.html','text/html;charset=utf-8');toast('تم حفظ التقرير HTML')}
 function newList(){if(!confirm('هل تريد بدء قائمة جديدة؟ سيتم حذف القائمة الحالية من هذا المتصفح.'))return;customers=[];current=0;stopTimer();callStarted=false;localStorage.removeItem('jeroCustomers');localStorage.removeItem('jeroCurrent');localStorage.removeItem('jeroSavedAt');$('numbers').value='';$('currentSection').style.display='none';renderAll();$('lastSaved').textContent='لم يتم الحفظ بعد';toast('تم بدء قائمة جديدة')}
 function renderChartsSafe(){try{renderCharts()}catch(e){}}
-loadData();renderAll();setInterval(()=>{renderReminders();if(typeof Notification!=='undefined'&&Notification.permission==='granted'){const due=customers.find(c=>c.reminder&&new Date(c.reminder).getTime()<=Date.now()&&c.status!=='تم التواصل');if(due&&Date.now()-lastReminderAlert>360000){lastReminderAlert=Date.now();new Notification('JERO — متابعة مستحقة',{body:(due.name||due.number)+' حان موعد متابعته.'})}}},60000);
+loadData();setInterval(()=>{renderReminders();if(typeof Notification!=='undefined'&&Notification.permission==='granted'){const due=customers.find(c=>c.reminder&&new Date(c.reminder).getTime()<=Date.now()&&c.status!=='تم التواصل');if(due&&Date.now()-lastReminderAlert>360000){lastReminderAlert=Date.now();new Notification('JERO — متابعة مستحقة',{body:(due.name||due.number)+' حان موعد متابعته.'})}}},60000);
 </script>
 </body></html>
